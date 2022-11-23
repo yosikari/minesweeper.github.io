@@ -1,0 +1,97 @@
+body {
+    background-color: rgb(187, 187, 187);
+    color: rgb(0, 0, 0);
+    text-align: center;
+}
+
+h1 {
+    margin-top: 20px;
+    font-size: 80px;
+    border-bottom: 2px black solid;
+}
+
+button {
+    margin: 15px;
+}
+
+.tools-bar {
+    margin: auto;
+    margin-bottom: 20px;
+    background-color: rgb(156, 156, 156);
+    width: 400px;
+    height: 100px;
+    font-size: 50px;
+
+}
+
+@font-face {
+    font-family: 'digital-clock-font';
+    src: url('../css/font/digital-7/digital-7.ttf');
+}
+
+.timer {
+
+    font-family: 'digital-clock-font';
+    font-size: 40px;
+    background-color: black;
+    padding: 2px 20px;
+    color: red;
+}
+
+.status {
+    border-top: 3px solid white;
+    border-left: 3px solid white;
+    border-right: 3px solid rgb(124, 124, 124);
+    border-bottom: 3px solid rgb(124, 124, 124);
+
+}
+
+.status img{
+    margin-top: 20px;
+    width: 50px;
+    height: 40px;
+    background-color: rgb(156, 156, 156);
+}
+
+.mines {
+    font-family: 'digital-clock-font';
+    font-size: 40px;
+    background-color: black;
+    padding: 2px 20px;
+    color: red;
+}
+
+
+.cell {
+    color: black;
+    width: 30px;
+    height: 30px;
+    border-radius: 5px;
+    text-align: center;
+    background-color: gainsboro;
+    border-top: 3px solid white;
+    border-left: 3px solid white;
+    border-right: 3px solid rgb(124, 124, 124);
+    border-bottom: 3px solid rgb(124, 124, 124);
+}
+
+table,
+th,
+td {
+    margin: auto;
+    border: solid 10px rgb(156, 156, 156);
+}
+
+.hiden {
+    color: gainsboro;
+    background-color: gainsboro;
+
+}
+
+img {
+    position: relative;
+    width: 25px;
+    height: 25px;
+    background-color: silver;
+}
+
