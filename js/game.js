@@ -43,14 +43,14 @@ function initGame() {
 }
 
 
-function restart() {
+function restart(size, mines) {
     reset = false
     leftClick = true
     gBoard
     gFirstCell = true
     gLevel = {
-        SIZE: 4,
-        MINES: 2,
+        SIZE: size,
+        MINES: mines,
         levelPassed: false,
         isTimerOn: false
     }
@@ -67,7 +67,7 @@ function restart() {
     document.querySelector('.lives').classList.remove('game-over')
     document.querySelector('table').style.display = 'table'
     document.querySelector('.timer').innerText = '00:00'
-
+    document.querySelector('.mines').innerText = `${mines}`
 
     initGame()
 
@@ -261,24 +261,6 @@ function expandShown(board, elCell, i, j) {
         }
     }
     renderCell(elCell, "", true)
-}
-
-function selectLevel(num) {
-    gLevel.SIZE = num
-    switch (num) {
-        case 4:
-            gLevel.MINES = 2
-            break
-        case 8:
-            gLevel.MINES = 14
-            break
-        case 12:
-            gLevel.MINES = 32
-            break
-
-    }
-    gBoard = buildBoard(gLevel.SIZE)
-    renderBoard(gBoard)
 }
 
 function renderCell(elCell, symbol, showContent) {

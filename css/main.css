@@ -1,5 +1,5 @@
 body {
-    background-image: url("/image/background.jpg");
+    background-image: url("../image/background.jpg");
     position: absolute;
     left: 280px;
 }
