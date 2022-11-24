@@ -58,16 +58,15 @@ function startTimer() {
         var s = Math.floor(delta / 1000)
         var sc = s % 60
         var min = Math.floor((s / 60))
-        if (reset) {
+        if (!gLevel.isTimerOn || gLevel.levelPassed) {
             min = 0
             sc = 0
             ms = 0
         }
         var elTimer = document.querySelector('.timer')
         elTimer.innerHTML = (min > 9 ? '' : '0') + min + ':' + (sc > 9 ? '' : '0') + sc
-        if (gLevel.levelPassed || reset) {
+        if (!gLevel.isTimerOn || gLevel.levelPassed ) {
             clearInterval(counter);
-            reset = false
         }
     }
 }

@@ -1,27 +1,46 @@
 body {
+    background-image: url("/image/background.jpg");
+    position: absolute;
+    left: 280px;
+}
+
+.page-body {
+    position: absolute;
     background-color: rgb(187, 187, 187);
     color: rgb(0, 0, 0);
     text-align: center;
+    padding: 30px;
+    border-top: 3px solid whitesmoke;
+    border-left: 3px solid whitesmoke;
+    border-right: 3px solid rgb(124, 124, 124);
+    border-bottom: 3px solid rgb(124, 124, 124);
+    /* height: 450px; */
+    width: 500px;
+
 }
 
 h1 {
     margin-top: 20px;
-    font-size: 80px;
-    border-bottom: 2px black solid;
+    font-size: 50px;
 }
 
 button {
     margin: 15px;
 }
 
-.tools-bar {
-    margin: auto;
-    margin-bottom: 20px;
-    background-color: rgb(156, 156, 156);
-    width: 400px;
-    height: 100px;
-    font-size: 50px;
+button:hover {
+    cursor: pointer;
+}
 
+.tools-bar {
+    /* position: absolute; */
+    margin: auto;
+    background-color: rgb(156, 156, 156);
+    width: 380px;
+    height: 100px;
+    left: 12px;
+    font-size: 50px;
+    border: 1px black solid;
 }
 
 @font-face {
@@ -30,12 +49,18 @@ button {
 }
 
 .timer {
-
+    
+    position: absolute;
+    
+    left: 100px;
+    top:220px;
+    width: 80px;
     font-family: 'digital-clock-font';
     font-size: 40px;
     background-color: black;
     padding: 2px 20px;
     color: red;
+    margin-left: 7px;
 }
 
 .status {
@@ -43,29 +68,61 @@ button {
     border-left: 3px solid white;
     border-right: 3px solid rgb(124, 124, 124);
     border-bottom: 3px solid rgb(124, 124, 124);
-
+    transform: 2sc;
+}
+.status:hover{
+    border-top: 5px solid white;
+    border-left: 5px solid white;
+    border-right: 5px solid rgb(124, 124, 124);
+    border-bottom: 5px solid rgb(124, 124, 124);
+    cursor: pointer;
 }
 
-.status img{
-    margin-top: 20px;
-    width: 50px;
-    height: 40px;
+.status img {
+    margin-top: 35px;
+    margin-left: auto;
+    width: 55px;
+    height: 30px;
     background-color: rgb(156, 156, 156);
 }
 
 .mines {
+    position: absolute;
+    left: 333px;
+    top:220px;
     font-family: 'digital-clock-font';
     font-size: 40px;
     background-color: black;
     padding: 2px 20px;
     color: red;
+    margin-right: 7px;
+    width: 80px;
 }
 
 
+.lives {
+    padding: 5px;
+}
+
+
+table{
+    /* position: absolute; */
+    top: 300px;
+    left: 0px;
+}
+
+td{
+    position: relative; 
+    bottom: 0px;
+    
+
+}
+
 .cell {
     color: black;
-    width: 30px;
-    height: 30px;
+    width: 28px;
+    height: 28px;
+    padding: 0px;
     border-radius: 5px;
     text-align: center;
     background-color: gainsboro;
@@ -73,25 +130,56 @@ button {
     border-left: 3px solid white;
     border-right: 3px solid rgb(124, 124, 124);
     border-bottom: 3px solid rgb(124, 124, 124);
+    transform: 2sc;
 }
+
+.cell:hover {
+    cursor: pointer;
+    background-color: rgb(208, 208, 208);
+}
+
 
 table,
-th,
 td {
     margin: auto;
-    border: solid 10px rgb(156, 156, 156);
+    
+    border-top: 5px solid white;
+    border-left: 5px solid white;
+    border-right: 5px solid rgb(124, 124, 124);
+    border-bottom: 5px solid rgb(124, 124, 124);
 }
 
-.hiden {
-    color: gainsboro;
-    background-color: gainsboro;
 
-}
 
 img {
     position: relative;
-    width: 25px;
-    height: 25px;
+    width: 27px;
+    height: 27px;
     background-color: silver;
+    padding: 0px;
+}
+
+.game-over {
+    position: fixed absolute;
+    width: 300px;
+    height: 200px;
+    line-height: 180px;
+    margin: auto;
+    left: 0;
+    right: 0;
+    font-size: 50px;
+    background-color: gainsboro;
+    border-top: 5px solid white;
+    border-left: 5px solid white;
+    border-right: 5px solid rgb(124, 124, 124);
+    border-bottom: 5px solid rgb(124, 124, 124);
+    font-family: 'digital-clock-font';
+}
+
+
+footer {
+
+    text-align: center;
+    font-size: 12px;
 }
 
