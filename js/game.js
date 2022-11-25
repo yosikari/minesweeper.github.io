@@ -18,6 +18,7 @@ var gFirstCell = true
 var gLevel = {
     SIZE: 4,
     MINES: 2,
+    minesLeft: 2,
     levelPassed: false,
     isTimerOn: false
 }
@@ -54,6 +55,7 @@ function restart(size, mines) {
     gLevel = {
         SIZE: size,
         MINES: mines,
+        minesLeft: mines,
         levelPassed: false,
         isTimerOn: false
     }
@@ -135,7 +137,7 @@ function renderBoard(board) {
     for (var i = 0; i < board.length; i++) {
         strHTML += '<tr>\n'
         for (var j = 0; j < board[0].length; j++) {
-            strHTML += `\t<td  class="cell hiden fancy i-${i}j-${j}"  onclick="cellClicked(this,${i},${j})" oncontextmenu="flagToggle(this,event,${i},${j})">  </td>\n `
+            strHTML += `\t<td  class="cell hiden fancy i-${i}j-${j}"  onclick="cellClicked(this,${i},${j})" oncontextmenu="toggleFlag(this,event,${i},${j})">  </td>\n `
 
         }
 
@@ -149,26 +151,11 @@ function cellClicked(elCell, i, j) {
         elCell.style.cursor = "not-allowed"
         return
     }
-    if(!gBoard[i][j].isMine){
-    new Audio('sound/step.wav').play()
-    }else if(gGame.lives !== 1 && !gGame.isHint){
-        new Audio('sound/mine.wav').play()
-    }
+    playSound(i, j)
     if (gGame.lives === 0) return
 
     if (gGame.isHint) {
-        var noShownNBHs = getNotReviledNeighbors(i, j)
-        for (var i = 0; i < noShownNBHs.length; i++) {
-            var x = noShownNBHs[i].location.i
-            var y = noShownNBHs[i].location.j
-            renderAcordingToType(gBoard[x][y], noShownNBHs[i].elCell, x, y, true)
-        }
-        setTimeout(() => {
-            for (var i = 0; i < noShownNBHs.length; i++) {
-                renderClosedCell(noShownNBHs[i].elCell)
-            }
-        }, 1000)
-        gGame.isHint = false
+        handleHint(i,j)
         return
     }
     if (gFirstCell) {
@@ -182,15 +169,15 @@ function cellClicked(elCell, i, j) {
         startTimer()
         gLevel.isTimerOn = true
     }
-
-    renderAcordingToType(currCell, elCell, i, j, false)
+    renderAccordingToType(currCell, elCell, i, j, false)
     checkLevelVictory()
-
 }
 
 
-function flagToggle(elCell, ev, i, j) {
-    ev.preventDefault();
+function toggleFlag(elCell, ev, i, j) {
+    if (ev) {
+        ev.preventDefault();
+    }
     if (!gLevel.isTimerOn) {
         startTimer()
         gLevel.isTimerOn = true
@@ -199,27 +186,38 @@ function flagToggle(elCell, ev, i, j) {
         elCell.style.cursor = "not-allowed"
         return
     }
+    if (gLevel.minesLeft === 0 && !gBoard[i][j].isMarked) {
+        return
+    }
     if (!gBoard[i][j].isMarked) {
         renderCell(elCell, FLAG, false)
         if (gBoard[i][j].isMine) {
             gGame.markedCount++
             checkLevelVictory()
         }
+        gLevel.minesLeft--
     } else {
         renderCell(elCell, "", false)
         if (gBoard[i][j].isMine) {
             gGame.markedCount--
         }
+        gLevel.minesLeft++
     }
+    document.querySelector('.mines').innerText = gLevel.minesLeft;
     gBoard[i][j].isMarked = !gBoard[i][j].isMarked
     return false
 }
 
-function renderAcordingToType(currCell, elCell, i, j, isHint) {
+function renderAccordingToType(currCell, elCell, i, j, isHint) {
+    if (currCell.isMarked) {
+        toggleFlag(elCell, null, i, j, isHint)
+    }
     if (currCell.isMine) {
         renderCell(elCell, MINE, true)
         if (!isHint) {
             gGame.markedCount++
+            gLevel.minesLeft--
+            document.querySelector('.mines').innerText = gLevel.minesLeft;
             gGame.lives--
             checkGameOver()
             currCell.isShown = true
@@ -254,10 +252,11 @@ function renderAcordingToType(currCell, elCell, i, j, isHint) {
                 if (!isHint) {
                     expandShown(gBoard, elCell, i, j)
                 }
-                else { //one just the current cell for hint
+                else { //open just the current cell for a hint
                     renderCell(elCell, "", true)
                 }
         }
+
     }
     if (!currCell.isShown && !isHint) {
         currCell.isShown = true
@@ -306,7 +305,7 @@ function expandShown(board, elCell, i, j) {
             if (board[x][y].isChecked || x === i && y === j) continue
             if (!board[x][y].isMine) {
                 var currElCell = document.querySelector(`.i-${x}j-${y}`)
-                renderAcordingToType(board[x][y], currElCell, x, y, false)
+                renderAccordingToType(board[x][y], currElCell, x, y, false)
             }
         }
     }
@@ -368,23 +367,45 @@ function getNotReviledSafeCell(element) {
                 safeCellsArr.push({ i, j })
             }
         }
-        shuffle(safeCellsArr)
-        var safeCell = safeCellsArr.pop()
-        var safeELCell = document.querySelector(`.i-${safeCell.i}j-${safeCell.j}`)
-        safeELCell.innerText = '🔍'
-        gGame.numberOfSafeClicks--
-        var strHtml = ''
-        for (var i = 0; i < gGame.numberOfSafeClicks; i++) {
-            strHtml += '🔍'
+        if (safeCellsArr.length > 0) {
+            shuffle(safeCellsArr)
+            var safeCell = safeCellsArr.pop()
+            var safeELCell = document.querySelector(`.i-${safeCell.i}j-${safeCell.j}`)
+            safeELCell.innerText = '🔍'
+            gGame.numberOfSafeClicks--
+            var strHtml = ''
+            for (var i = 0; i < gGame.numberOfSafeClicks; i++) {
+                strHtml += '🔍'
+            }
+            element.innerText = strHtml
+
+            setTimeout(() => {
+                if (!gBoard[safeCell.i][safeCell.j].isShown)
+                    safeELCell.innerText = ''
+            }, 1000)
         }
-        element.innerText = strHtml
     }
-    setTimeout(() => {
-        if (!gBoard[safeCell.i][safeCell.j].isShown)
-            safeELCell.innerText = ''
-    }, 1000)
 }
 
+function handleHint(i,j) {
+    var noShownNBHs = getNotReviledNeighbors(i, j)
+    for (var i = 0; i < noShownNBHs.length; i++) {
+        var x = noShownNBHs[i].location.i
+        var y = noShownNBHs[i].location.j
+        renderAccordingToType(gBoard[x][y], noShownNBHs[i].elCell, x, y, true)
+    }
+    setTimeout(() => {
+        for (var i = 0; i < noShownNBHs.length; i++) {
+            renderClosedCell(noShownNBHs[i].elCell)
+        }
+    }, 1000)
+    gGame.isHint = false
+}
 
-
-
+function playSound(i, j) {
+    if (!gBoard[i][j].isMine) {
+        new Audio('sound/step.wav').play()
+    } else if (gGame.lives !== 1 && !gGame.isHint) {
+        new Audio('sound/mine.wav').play()
+    }
+}
