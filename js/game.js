@@ -9,7 +9,6 @@ const SIX = `<img src="image/6.png" alt="mine">`
 const SEVEN = `<img src="image/7.png" alt="mine">`
 const EIGHT = `<img src="image/8.png" alt="mine">`
 const FLAG = `<img style="background-color: gainsboro;" src="image/flag.png" alt="mine">`
-
 var reset = false
 var leftClick = true
 var gBoard
@@ -20,7 +19,8 @@ var gLevel = {
     MINES: 2,
     minesLeft: 2,
     levelPassed: false,
-    isTimerOn: false
+    isTimerOn: false,
+    currLvl: 0
 }
 
 var gGame = {
@@ -44,20 +44,50 @@ var gGame = {
 function initGame() {
     gBoard = buildBoard(gLevel.SIZE)
     renderBoard(gBoard)
+    var elBestScoreValue = document.querySelector('.best-score-vaule')
+    switch (gLevel.currLvl) {
+        case 0:
+            if (localStorage.bestScoreLow) {
+                elBestScoreValue.innerText = localStorage.bestScoreLow
+            }
+            break
+
+        case 1:
+            if (localStorage.bestScoreMed) {
+                elBestScoreValue.innerText = localStorage.bestScoreMed
+            }
+            else {
+                elBestScoreValue.innerText = "______"
+            }
+            break
+        case 2:
+            if (localStorage.bestScoreHigh) {
+                elBestScoreValue.innerText = localStorage.bestScoreHigh
+            }
+            else {
+                elBestScoreValue.innerText = "______"
+            }
+            break
+    }
 }
 
-
-function restart(size, mines) {
+function restart(currLvl, size, mines) {
     reset = false
     leftClick = true
     gBoard
     gFirstCell = true
+    if (currLvl === undefined) {
+        size = gLevel.SIZE
+        mines = gLevel.MINES
+        currLvl = gLevel.currLvl
+    }
     gLevel = {
         SIZE: size,
         MINES: mines,
         minesLeft: mines,
         levelPassed: false,
-        isTimerOn: false
+        isTimerOn: false,
+        currLvl: currLvl
     }
     gGame = {
         isOn: false,
@@ -155,7 +185,7 @@ function cellClicked(elCell, i, j) {
     if (gGame.lives === 0) return
 
     if (gGame.isHint) {
-        handleHint(i,j)
+        handleHint(i, j)
         return
     }
     if (gFirstCell) {
@@ -172,7 +202,6 @@ function cellClicked(elCell, i, j) {
     renderAccordingToType(currCell, elCell, i, j, false)
     checkLevelVictory()
 }
-
 
 function toggleFlag(elCell, ev, i, j) {
     if (ev) {
@@ -289,8 +318,21 @@ function checkGameOver() {
 }
 
 function checkLevelVictory() {
+    var currScore = document.querySelector('.timer').innerText
     if (gGame.markedCount === gLevel.MINES &&
         gGame.shownCount === gLevel.SIZE * gLevel.SIZE - gLevel.MINES) {
+
+        if (gLevel.currLvl === 0 &&
+            (localStorage.bestScoreLow === undefined || currScore < localStorage.bestScoreLow)) {
+            localStorage.setItem("bestScoreLow", currScore)
+        }
+        else if (gLevel.currLvl === 1 &&
+            (localStorage.bestScoreMed === undefined || currScore < localStorage.bestScoreMed)) {
+            localStorage.setItem("bestScoreMed", currScore)
+        }
+        else if (gLevel.currLvl === 2 && (localStorage.bestScoreHigh === undefined || currScore < localStorage.bestScoreHigh)) {
+            localStorage.setItem("bestScoreHigh", currScore)
+        }
         gLevel.isTimerOn = false
         new Audio('sound/win.wav').play()
         document.querySelector('.status').innerHTML = '<img src="image/win.png" alt="status"></img>'
@@ -387,7 +429,7 @@ function getNotReviledSafeCell(element) {
     }
 }
 
-function handleHint(i,j) {
+function handleHint(i, j) {
     var noShownNBHs = getNotReviledNeighbors(i, j)
     for (var i = 0; i < noShownNBHs.length; i++) {
         var x = noShownNBHs[i].location.i
