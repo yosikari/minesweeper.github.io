@@ -14,8 +14,8 @@ body {
     border-left: 3px solid whitesmoke;
     border-right: 3px solid rgb(124, 124, 124);
     border-bottom: 3px solid rgb(124, 124, 124);
-    /* height: 450px; */
     width: 500px;
+    height: 800px
 
 }
 
@@ -41,6 +41,7 @@ button:hover {
     left: 12px;
     font-size: 50px;
     border: 1px black solid;
+
 }
 
 @font-face {
@@ -49,11 +50,9 @@ button:hover {
 }
 
 .timer {
-    
     position: absolute;
-    
     left: 100px;
-    top:220px;
+    top: 220px;
     width: 80px;
     font-family: 'digital-clock-font';
     font-size: 40px;
@@ -61,6 +60,10 @@ button:hover {
     padding: 2px 20px;
     color: red;
     margin-left: 7px;
+    border-top: 3px solid white;
+    border-left: 3px solid white;
+    border-right: 3px solid rgb(124, 124, 124);
+    border-bottom: 3px solid rgb(124, 124, 124);
 }
 
 .status {
@@ -68,9 +71,11 @@ button:hover {
     border-left: 3px solid white;
     border-right: 3px solid rgb(124, 124, 124);
     border-bottom: 3px solid rgb(124, 124, 124);
-    transform: 2sc;
+    width: 30px;
+    font-size: 30px;
 }
-.status:hover{
+
+.status:hover {
     border-top: 5px solid white;
     border-left: 5px solid white;
     border-right: 5px solid rgb(124, 124, 124);
@@ -79,17 +84,17 @@ button:hover {
 }
 
 .status img {
-    margin-top: 35px;
+    margin-top: 40px;
     margin-left: auto;
-    width: 55px;
-    height: 30px;
+    width: 30px;
+    height: 20px;
     background-color: rgb(156, 156, 156);
 }
 
 .mines {
     position: absolute;
     left: 333px;
-    top:220px;
+    top: 220px;
     font-family: 'digital-clock-font';
     font-size: 40px;
     background-color: black;
@@ -97,24 +102,52 @@ button:hover {
     color: red;
     margin-right: 7px;
     width: 80px;
+    border-top: 3px solid white;
+    border-left: 3px solid white;
+    border-right: 3px solid rgb(124, 124, 124);
+    border-bottom: 3px solid rgb(124, 124, 124);
 }
 
+.game-prop {
+    position: relative;
+    height: 40px;
+    margin-bottom: 10px;
+}
 
 .lives {
-    padding: 5px;
+    position: absolute;
+    left: 218px;
+    top: 14px;
+
+}
+
+.hint button{
+    position: absolute;
+    left: 75px;
+    background-color: rgb(187, 187, 187);
+    border: none;
+    font-size: 18px;
+}
+
+.safe-click button{
+    position: absolute;
+    left: 315px;
+    background-color: rgb(187, 187, 187);
+    border: none;
+    font-size: 18px;
 }
 
 
-table{
+table {
     /* position: absolute; */
     top: 300px;
     left: 0px;
 }
 
-td{
-    position: relative; 
+td {
+    position: relative;
     bottom: 0px;
-    
+
 
 }
 
@@ -142,7 +175,6 @@ td{
 table,
 td {
     margin: auto;
-    
     border-top: 5px solid white;
     border-left: 5px solid white;
     border-right: 5px solid rgb(124, 124, 124);
@@ -178,8 +210,6 @@ img {
 
 
 footer {
-
     text-align: center;
     font-size: 12px;
 }
-
