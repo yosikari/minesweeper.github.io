@@ -518,6 +518,9 @@ function undo() {
                 gLevel.minesLeft++
                 document.querySelector('.mines').innerText = gLevel.minesLeft;
                 gGame.lives++
+                if (gGame.lives === 3) {
+                    document.querySelector('.status').innerHTML = `<img src="image/normal.png" alt="status">`
+                }
                 checkGameOver()
                 currCell.isShown = false
             }
