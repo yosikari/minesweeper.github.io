@@ -25,6 +25,8 @@ var gLevel = {
 
 var gGame = {
     isOn: false,
+    isDarkMode: false,
+    isSoundOn: true,
     shownCount: 0,
     markedCount: 0,
     secsPassed: 0,
@@ -35,9 +37,6 @@ var gGame = {
 }
 
 //!.....................................................
-
-
-
 
 
 
@@ -103,6 +102,7 @@ function restart(currLvl, size, mines) {
     document.querySelector('.status').innerHTML = '<img src="image/normal.png" alt="status"></img>'
     document.querySelector('.lives').innerText = '❤️❤️❤️'
     document.querySelector('.lives').classList.remove('game-over')
+    document.querySelector('footer').style.marginTop = 'auto'
     document.querySelector('table').style.display = 'table'
     document.querySelector('.timer').innerText = '00:00'
     document.querySelector('.mines').innerText = (mines > 10) ? mines : '0' + mines
@@ -110,6 +110,7 @@ function restart(currLvl, size, mines) {
     document.querySelector('.hint button').innerText = '💡💡💡'
     document.querySelector('.safe-click').style.display = 'block'
     document.querySelector('.safe-click button').innerText = '🔍🔍🔍'
+    
     initGame()
 
 }
@@ -181,7 +182,9 @@ function cellClicked(elCell, i, j) {
         elCell.style.cursor = "not-allowed"
         return
     }
-    playSound(i, j)
+    if (gGame.isSoundOn) {
+        playSound(i, j)
+    }
     if (gGame.lives === 0) return
 
     if (gGame.isHint) {
@@ -305,12 +308,15 @@ function checkGameOver() {
     var elLives = document.querySelector('.lives')
     elLives.innerText = strHTML
     if (gGame.lives === 0) {
-        new Audio('sound/lose.wav').play()
+        if (gGame.isSoundOn) {
+            new Audio('sound/lose.wav').play()
+        }
         document.querySelector('.status').innerHTML = '<img src="image/lose.png" alt="status"></img>'
         gLevel.isTimerOn = false
         document.querySelector('table').style.display = 'none'
         elLives.classList.add('game-over')
-        elLives.innerHTML = 'Game Over!'
+        elLives.innerHTML = `Game Over!`
+        document.querySelector('footer').style.marginTop = '170px'
         document.querySelector('.hint').style.display = 'none'
         document.querySelector('.safe-click').style.display = 'none'
 
@@ -334,7 +340,9 @@ function checkLevelVictory() {
             localStorage.setItem("bestScoreHigh", currScore)
         }
         gLevel.isTimerOn = false
-        new Audio('sound/win.wav').play()
+        if (gGame.isSoundOn) {
+            new Audio('sound/win.wav').play()
+        }
         document.querySelector('.status').innerHTML = '<img src="image/win.png" alt="status"></img>'
     }
 }
@@ -450,4 +458,38 @@ function playSound(i, j) {
     } else if (gGame.lives !== 1 && !gGame.isHint) {
         new Audio('sound/mine.wav').play()
     }
+}
+
+function toggleDarkMode(elBtn) {
+    if (gGame.isDarkMode) {
+        // return normal mode
+        elBtn.innerText = '🌙'
+        document.querySelector('body').style.backgroundImage = 'url("../image/background.jpg")'
+        document.querySelector('body').style.opacity = '1.0'
+        document.querySelector('.page-body').style.backgroundColor = 'rgb(187, 187, 187)'
+        document.querySelector('.page-body').style.color = 'rgb(0,0,0)'
+    } else {
+        // return d.mode
+        elBtn.innerText = '☀️'
+        document.querySelector('body').style.backgroundImage = 'url("../image/darkModeBackground.jpg")'
+        document.querySelector('body').style.opacity = '0.8'
+        document.querySelector('.page-body').style.backgroundColor = 'rgb(27, 27, 27)'
+        document.querySelector('.page-body').style.color = 'whitesmoke'
+    }
+    gGame.isDarkMode = !gGame.isDarkMode
+}
+
+function toggleSound(elBtn) {
+    if (gGame.isSoundOn) {
+        elBtn.innerText = '🔇'
+    } else {
+        elBtn.innerText = '🔊'
+    }
+    gGame.isSoundOn = !gGame.isSoundOn
+}
+
+function undo(){
+
+
+    
 }

@@ -1,6 +1,7 @@
 body {
     background-image: url("../image/background.jpg");
     position: absolute;
+    opacity: none;
     left: 280px;
 }
 
@@ -15,8 +16,21 @@ body {
     border-right: 3px solid rgb(124, 124, 124);
     border-bottom: 3px solid rgb(124, 124, 124);
     width: 500px;
-    height: 800px
+    height: 800px;
+
 }
+
+.top-bar {
+    position: absolute;
+    top: 10px;
+    right: 430px;
+
+}
+
+.top-bar button {
+    margin: 2px
+}
+
 
 h1 {
     margin-top: 20px;
@@ -28,12 +42,13 @@ h1 {
     left: 190px;
     top: 110px;
     padding: 5px;
-    
+
 }
 
 
 button {
     margin: 15px;
+
 }
 
 button:hover {
@@ -132,7 +147,7 @@ button:hover {
 .hint button {
     position: absolute;
     left: 75px;
-    background-color: rgb(187, 187, 187);
+    background-color: transparent;
     border: none;
     font-size: 18px;
 }
@@ -140,7 +155,7 @@ button:hover {
 .safe-click button {
     position: absolute;
     left: 315px;
-    background-color: rgb(187, 187, 187);
+    background-color: transparent;
     border: none;
     font-size: 18px;
 }
@@ -218,6 +233,15 @@ img {
 
 
 footer {
+    position: absolute;
+    margin-top: auto;
+
+    padding-bottom: 20px;
+    left: auto;
     text-align: center;
     font-size: 12px;
 }
+footer hr{
+width: 500px;
+}
+
