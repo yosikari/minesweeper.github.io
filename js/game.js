@@ -8,11 +8,12 @@ const FIVE = `<img src="image/5.png" alt="mine">`
 const SIX = `<img src="image/6.png" alt="mine">`
 const SEVEN = `<img src="image/7.png" alt="mine">`
 const EIGHT = `<img src="image/8.png" alt="mine">`
-const FLAG = `<img style="background-color: gainsboro;" src="image/flag.png" alt="mine">`
+const FLAG = `<img style="background-color: gainsboro; height: 24px;" src="image/flag.png" alt="mine">`
 var reset = false
 var leftClick = true
 var gBoard
 var gFirstCell = true
+var gUndoOperations = []
 
 var gLevel = {
     SIZE: 4,
@@ -110,7 +111,7 @@ function restart(currLvl, size, mines) {
     document.querySelector('.hint button').innerText = '💡💡💡'
     document.querySelector('.safe-click').style.display = 'block'
     document.querySelector('.safe-click button').innerText = '🔍🔍🔍'
-    
+
     initGame()
 
 }
@@ -202,13 +203,16 @@ function cellClicked(elCell, i, j) {
         startTimer()
         gLevel.isTimerOn = true
     }
-    renderAccordingToType(currCell, elCell, i, j, false)
+    gUndoOperations.push({ elCell: elCell, location: { i, j }, isLastOperationToUndo: true, isToggleFlag: false })
+    renderAccordingToType(currCell, elCell, i, j, false, false)
     checkLevelVictory()
 }
 
 function toggleFlag(elCell, ev, i, j) {
     if (ev) {
         ev.preventDefault();
+        gUndoOperations.push({ elCell: elCell, location: { i, j }, isLastOperationToUndo: true, isToggleFlag: true })
+
     }
     if (!gLevel.isTimerOn) {
         startTimer()
@@ -240,7 +244,7 @@ function toggleFlag(elCell, ev, i, j) {
     return false
 }
 
-function renderAccordingToType(currCell, elCell, i, j, isHint) {
+function renderAccordingToType(currCell, elCell, i, j, isHint, pushToUndo) {
     if (currCell.isMarked) {
         toggleFlag(elCell, null, i, j, isHint)
     }
@@ -289,6 +293,9 @@ function renderAccordingToType(currCell, elCell, i, j, isHint) {
                 }
         }
 
+    }
+    if (pushToUndo) {
+        gUndoOperations.push({ elCell: elCell, location: { i, j }, isLastOperationToUndo: false, isToggleFlag: false })
     }
     if (!currCell.isShown && !isHint) {
         currCell.isShown = true
@@ -355,7 +362,11 @@ function expandShown(board, elCell, i, j) {
             if (board[x][y].isChecked || x === i && y === j) continue
             if (!board[x][y].isMine) {
                 var currElCell = document.querySelector(`.i-${x}j-${y}`)
-                renderAccordingToType(board[x][y], currElCell, x, y, false)
+                renderAccordingToType(board[x][y],
+                    currElCell,
+                    x, y,
+                    false/*not a hint*/,
+                    true /*push to the undo array*/)
             }
         }
     }
@@ -442,7 +453,11 @@ function handleHint(i, j) {
     for (var i = 0; i < noShownNBHs.length; i++) {
         var x = noShownNBHs[i].location.i
         var y = noShownNBHs[i].location.j
-        renderAccordingToType(gBoard[x][y], noShownNBHs[i].elCell, x, y, true)
+        renderAccordingToType(gBoard[x][y],
+            noShownNBHs[i].elCell,
+            x, y,
+            true /*is hint*/,
+            false /*will not be added to the undo since its a hint*/)
     }
     setTimeout(() => {
         for (var i = 0; i < noShownNBHs.length; i++) {
@@ -488,8 +503,27 @@ function toggleSound(elBtn) {
     gGame.isSoundOn = !gGame.isSoundOn
 }
 
-function undo(){
-
-
-    
+function undo() {
+    while (gUndoOperations.length > 0) {
+        var currOperation = gUndoOperations.pop()
+        var currCell = gBoard[currOperation.location.i][currOperation.location.j]
+        if (currOperation.isToggleFlag) {
+            toggleFlag(currOperation.elCell, null, currOperation.location.i, currOperation.location.j)
+        } else if (currCell.isMine) {
+            gGame.markedCount--
+            gLevel.minesLeft++
+            document.querySelector('.mines').innerText = gLevel.minesLeft;
+            gGame.lives++
+            checkGameOver()
+            currCell.isShown = false
+        }
+        else {
+            currCell.isShown = false
+            gGame.shownCount--
+        }
+        renderClosedCell(currOperation.elCell)
+        if (currOperation.isLastOperationToUndo) {
+            break
+        }
+    }
 }
