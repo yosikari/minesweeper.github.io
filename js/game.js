@@ -76,6 +76,7 @@ function restart(currLvl, size, mines) {
     leftClick = true
     gBoard
     gFirstCell = true
+    gUndoOperations = []
     if (currLvl === undefined) {
         size = gLevel.SIZE
         mines = gLevel.MINES
@@ -318,6 +319,7 @@ function checkGameOver() {
         if (gGame.isSoundOn) {
             new Audio('sound/lose.wav').play()
         }
+        gUndoOperations = []
         document.querySelector('.status').innerHTML = '<img src="image/lose.png" alt="status"></img>'
         gLevel.isTimerOn = false
         document.querySelector('table').style.display = 'none'
@@ -347,6 +349,7 @@ function checkLevelVictory() {
             localStorage.setItem("bestScoreHigh", currScore)
         }
         gLevel.isTimerOn = false
+        gUndoOperations = []
         if (gGame.isSoundOn) {
             new Audio('sound/win.wav').play()
         }
@@ -509,19 +512,21 @@ function undo() {
         var currCell = gBoard[currOperation.location.i][currOperation.location.j]
         if (currOperation.isToggleFlag) {
             toggleFlag(currOperation.elCell, null, currOperation.location.i, currOperation.location.j)
-        } else if (currCell.isMine) {
-            gGame.markedCount--
-            gLevel.minesLeft++
-            document.querySelector('.mines').innerText = gLevel.minesLeft;
-            gGame.lives++
-            checkGameOver()
-            currCell.isShown = false
+        } else {
+            if (currCell.isMine) {
+                gGame.markedCount--
+                gLevel.minesLeft++
+                document.querySelector('.mines').innerText = gLevel.minesLeft;
+                gGame.lives++
+                checkGameOver()
+                currCell.isShown = false
+            }
+            else {
+                currCell.isShown = false
+                gGame.shownCount--
+            }
+            renderClosedCell(currOperation.elCell)
         }
-        else {
-            currCell.isShown = false
-            gGame.shownCount--
-        }
-        renderClosedCell(currOperation.elCell)
         if (currOperation.isLastOperationToUndo) {
             break
         }
